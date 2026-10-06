@@ -1,0 +1,406 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Culture Agent – Dashboard</title>
+<style>
+:root{--bg:#0a0c12;--s:#141824;--s2:#1c2133;--s3:#262c42;--bd:#2a3049;--ac:#5b9bfb;--ac2:#8b6cfc;--gold:#f5c842;--tx:#eef0f5;--mu:#8e95b3;--gr:#3ddc9a;--rd:#fb7373}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:radial-gradient(1100px 500px at 8% -10%,rgba(91,155,251,.09),transparent),radial-gradient(900px 450px at 95% 0,rgba(139,108,252,.07),transparent),var(--bg);color:var(--tx);font-size:13px;min-height:100vh}
+
+/* ---------- header, tab, filter ---------- */
+.top{position:sticky;top:0;z-index:20;background:rgba(20,24,36,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:22px;padding:12px 24px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:18px}
+.bt{font-weight:800;font-size:15px;letter-spacing:.02em}.bs{font-size:11px;color:var(--mu);margin-top:1px}
+.tabs{display:flex;gap:4px;background:var(--s2);padding:4px;border-radius:10px}
+.tab{padding:7px 16px;border-radius:7px;border:0;background:transparent;color:var(--mu);cursor:pointer;font-size:12px;font-weight:600;transition:.15s}
+.tab:hover{color:var(--tx)}.tab.on{background:var(--ac);color:#fff}
+.range{margin-left:auto;background:rgba(91,155,251,.14);border:1px solid rgba(91,155,251,.3);color:var(--ac);font-size:11px;padding:4px 12px;border-radius:20px;font-weight:600}
+.fl{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;padding:14px 24px;border-bottom:1px solid var(--bd);background:var(--s)}
+.fl label{display:block;font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+select,input{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:7px 10px;color:var(--tx);font-size:12px;outline:none;min-width:150px}
+select:focus,input:focus{border-color:var(--ac)}
+.rs{background:var(--s3);border:1px solid var(--bd);border-radius:7px;padding:7px 14px;color:var(--mu);font-size:12px;cursor:pointer}.rs:hover{color:var(--tx)}
+.wrap{max-width:1280px;margin:0 auto;padding:22px 24px 48px}
+.pn{display:none}.pn.on{display:block;animation:fi .25s ease}@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ---------- ringkasan ---------- */
+.hero{font-size:19px;font-weight:600;line-height:1.45;margin-bottom:18px}.hero b{color:var(--ac)}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.kc{background:linear-gradient(160deg,var(--s3),var(--s));border:1px solid var(--bd);border-radius:14px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
+.ki{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--b);flex:none}
+.kb{min-width:0;flex:1}.kl{font-size:10px;color:var(--mu);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kv{font-size:28px;font-weight:800;line-height:1.15;margin-top:3px}.kv.sm{font-size:15px;padding:6px 0 4px;line-height:1.25}
+.kn{font-size:11px;color:var(--mu);margin-top:4px}.up{color:var(--gr);font-weight:700}.dw{color:var(--rd);font-weight:700}
+.kbar{margin-top:9px;height:6px;border-radius:4px;background:var(--s2);overflow:hidden}.kbar i{display:block;height:100%;border-radius:4px;background:var(--c)}
+.g2{display:grid;grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:22px;align-items:start}.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.card{background:var(--s);border:1px solid var(--bd);border-radius:14px;overflow:hidden;min-width:0}
+.ch{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:13px;gap:8px;flex-wrap:wrap}.ch small{font-weight:400;color:var(--mu);font-size:11px}
+.cb{padding:16px}
+.sec{font-size:15px;font-weight:700;margin:4px 0 12px}.sec small{font-weight:400;color:var(--mu);font-size:12px;margin-left:8px}
+.cs svg{width:100%;height:auto;display:block}.cs text{fill:var(--mu);font-size:11px}.cs .v{fill:var(--tx);font-weight:700;font-size:12px}
+.bar{transition:opacity .15s}.bar:hover{opacity:.75;cursor:pointer}
+.cl{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12px}.cl i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:5px}
+.dn{display:flex;gap:18px;align-items:center;flex-wrap:wrap}.dn svg{width:160px;height:160px;flex:none}.dn svg text{fill:var(--mu);font-size:11px;text-anchor:middle}.dn svg .big{fill:var(--tx);font-size:28px;font-weight:800}.seg{transition:opacity .15s}.seg:hover{opacity:.7}
+.lg{flex:1;min-width:150px;display:grid;gap:8px}.lg div{display:flex;align-items:center;gap:8px;font-size:12px}.lg i{width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}.lg b{margin-left:auto}.lg em{font-style:normal;color:var(--mu);width:40px;text-align:right}
+
+/* avatar + peringkat */
+.av{border-radius:50%;background:color-mix(in srgb,var(--c) 22%,#141824);color:var(--c);font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;border:1px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.av.lg{width:46px;height:46px;font-size:15px}.av.md{width:34px;height:34px;font-size:12px}.av.sm{width:26px;height:26px;font-size:10px}
+.tr{display:grid;grid-template-columns:26px 34px minmax(0,1.3fr) minmax(70px,1fr) 28px;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--bd);cursor:pointer}.tr:first-child{border-top:0}.tr:hover{background:var(--s2)}
+.tn{font-weight:600;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tr b{text-align:right;font-size:14px}
+.rk{width:24px;height:24px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}.rk.r1{background:var(--gold);color:#222}.rk.r2{background:#c0c7d8;color:#222}.rk.r3{background:#d9915a;color:#222}
+.tb{height:8px;background:var(--s2);border-radius:6px;overflow:hidden}.tb i{display:block;height:100%;border-radius:6px;background:var(--c)}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c);margin-top:2px}
+
+/* saklar grafik + sorotan */
+.sw{display:flex;gap:4px;background:var(--s2);padding:3px;border-radius:9px}
+.sw button{border:0;background:transparent;color:var(--mu);padding:6px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer}
+.sw button:hover{color:var(--tx)}.sw button.on{background:var(--ac);color:#fff}
+.ptl{font-weight:700;font-size:14px}.pst{display:block;font-weight:400;color:var(--mu);font-size:11px;margin-top:2px}
+.yrs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.yc{background:var(--s2);border:1px solid var(--bd);border-left:4px solid var(--c);border-radius:10px;padding:8px 14px}.yc b{font-size:20px;display:block;line-height:1.2}.yc span{font-size:11px;color:var(--mu)}
+.hl{display:grid;gap:10px}
+.hi{display:flex;gap:12px;align-items:center;padding:10px 12px;background:var(--s2);border-radius:10px}
+.hi .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--b);flex:none}
+.hi small{display:block;font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;font-weight:700}.hi b{font-size:14px}
+.emp{color:var(--mu);padding:18px;text-align:center}
+
+/* layout baris grafik + Top 10 interaktif */
+.g2b{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;align-items:stretch}.g2b>.card{margin:0}
+.dc{display:flex;flex-direction:column}.dc .cb{flex:1;display:flex;align-items:center;justify-content:center}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--bd);color:var(--mu);border-radius:20px;padding:4px 11px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--c)}.chip:hover{color:var(--tx)}
+.chip.on{background:color-mix(in srgb,var(--c) 22%,transparent);border-color:var(--c);color:var(--tx)}
+.tq{display:grid;grid-template-columns:28px 38px minmax(140px,1.1fr) minmax(120px,3fr) 34px;gap:12px;align-items:center;padding:9px 6px;border-top:1px solid var(--bd);cursor:pointer;border-radius:8px;transition:opacity .2s,background .15s}
+.tq:first-child{border-top:0}.tq:hover{background:var(--s2)}.tq.dm{opacity:.22}.tq b{text-align:right;font-size:15px}
+.tk{display:flex;height:26px}
+.bk{flex:none;height:100%;border-radius:6px;margin-right:3px;background:linear-gradient(180deg,var(--c),color-mix(in srgb,var(--c) 60%,#000));transform-origin:left;animation:grow .45s ease backwards;transition:transform .15s,filter .15s}
+.bk:hover{transform:translateY(-3px);filter:brightness(1.3)}
+@keyframes grow{from{transform:scaleX(0);opacity:0}}
+.btn2{background:var(--s2);border:1px solid var(--bd);color:var(--mu);border-radius:7px;padding:7px 16px;font-size:12px;cursor:pointer}.btn2:hover{color:var(--tx)}
+@media(max-width:980px){.g2b{grid-template-columns:1fr}}
+@media(max-width:620px){.tq{grid-template-columns:24px 34px minmax(0,1fr) 28px;gap:8px 10px}.tk{grid-column:2/4;grid-row:2}}
+
+/* daftar kegiatan */
+.bar2{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}.bar2 input{flex:1;min-width:220px}.bar2 span{color:var(--mu);font-size:12px}
+.btn{background:var(--ac);border:0;color:#fff;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer}.btn:hover{opacity:.85}
+.tsc{overflow:auto;max-height:70vh}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--s2);padding:9px 12px;text-align:left;font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--bd);position:sticky;top:0;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--bd);vertical-align:top}td.nw{white-space:nowrap}tbody tr:hover{background:var(--s2)}
+.nm{font-weight:700;cursor:pointer}.nm:hover{color:var(--ac)}.sub{font-size:11px;color:var(--mu);margin-top:2px}
+
+/* panduan */
+.gd{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.gd p,.gd li{line-height:1.7;color:#cdd2e3}.gd ul{padding-left:18px}.gd li{margin-bottom:6px}.gd b{color:var(--tx)}
+
+/* modal + tooltip */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}.ov.on{display:flex}
+.md{background:var(--s);border:1px solid var(--bd);border-radius:16px;width:min(540px,100%);max-height:85vh;overflow:auto}
+.mh{padding:16px 20px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;gap:10px}.mn{font-size:16px;font-weight:700}.ms{font-size:11px;color:var(--mu);margin-top:2px}
+.mx{background:none;border:0;color:var(--mu);font-size:24px;cursor:pointer}.mb{padding:8px 20px 16px}
+.li{padding:10px 0;border-bottom:1px solid var(--bd);font-size:12px}.li:last-child{border:0}.li small{color:var(--mu);display:block;margin-top:2px}
+#tip{position:fixed;pointer-events:none;background:var(--s3);border:1px solid var(--bd);padding:5px 9px;border-radius:6px;font-size:12px;opacity:0;z-index:99;max-width:270px;line-height:1.4}
+
+@media(max-width:980px){.g2{grid-template-columns:1fr}.kp{grid-template-columns:1fr 1fr}.range{margin-left:0}}
+@media(max-width:560px){.kp{grid-template-columns:1fr}.top,.fl,.wrap{padding-left:14px;padding-right:14px}select{min-width:130px}}
+</style></head><body>
+
+<div class="ov" id="ov"><div class="md"><div class="mh"><div><div class="mn" id="mn"></div><div class="ms" id="ms"></div></div><button class="mx" id="mxb">×</button></div><div class="mb" id="mb"></div></div></div>
+
+<header class="top">
+  <div class="brand"><div class="logo">🌱</div><div><div class="bt">CULTURE AGENT</div><div class="bs">Analytics Dashboard</div></div></div>
+  <nav class="tabs" id="nav"></nav>
+  <div class="range" id="pb"></div>
+</header>
+
+<div class="fl" id="fl">
+  <div><label>Area</label><select id="fa"></select></div>
+  <div><label>Direktorat</label><select id="fd"></select></div>
+  <div><label>Tahun</label><select id="fy"></select></div>
+  <div><label>Bulan</label><select id="fm"></select></div>
+  <button class="rs" id="rst">↺ Reset</button>
+</div>
+
+<div class="wrap">
+
+<!-- ========== TAB 1: RINGKASAN ========== -->
+<section class="pn on" id="p-ringkasan">
+  <div class="hero" id="hero"></div>
+  <div class="kp" id="kp"></div>
+
+  <div class="g2b">
+    <div class="card">
+      <div class="ch"><div><div class="ptl" id="prT"></div><span class="pst" id="prS"></span></div>
+        <div class="sw" id="sw"><button class="on" data-v="bln">Per bulan</button><button data-v="thn">Per tahun</button></div></div>
+      <div class="cb"><div class="yrs" id="yrs"></div><div class="cs" id="bln"></div><div class="cl" id="blg"></div></div>
+    </div>
+    <div class="card dc"><div class="ch"><span>Porsi kegiatan per area</span></div><div class="cb" id="dn"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div><div class="ptl" id="t10t">10 culture agent teraktif</div><span class="pst">satu kotak = satu kegiatan · arahkan kursor ke kotak untuk melihat kegiatannya · klik baris untuk daftar lengkap</span></div><div class="chips" id="t10l"></div></div>
+    <div class="cb" id="t10"></div>
+  </div>
+</section>
+
+<!-- ========== TAB 2: DAFTAR KEGIATAN ========== -->
+<section class="pn" id="p-daftar">
+  <div class="bar2"><input id="q" placeholder="Cari nama, kegiatan, unit, area…"><span id="lc"></span><button class="btn" id="csvb">⬇ Unduh CSV</button></div>
+  <div class="card"><div class="tsc" id="lst"></div></div>
+</section>
+
+<!-- ========== TAB 3: CARA BACA ========== -->
+<section class="pn" id="p-cara"><div class="gd" id="gu"></div></section>
+
+</div>
+<div id="tip"></div>
+
+<script>
+/* =====================================================
+   1. DATA  (disalin dari sheet "Data" di file Excel)
+   Urutan kolom: nama, NIK, area, department, direktorat, tanggal, kegiatan, unit/pabrik
+   ===================================================== */
+const D=[["MR MARCH ARRI WIBOWO", 62503453, "CILACAP", "HCBP FOR CEMENT", "FINANCE & RISK MANAGEMENT DIRECTORATE", "2026-08-08", "Senam HUT SBI Cilacap", "CP CILACAP"], ["MR ANGKAT AWITONO", 62201049, "JAKARTA", "HC IR, ER & CULTURE", "FINANCE & RISK MANAGEMENT DIRECTORATE", "2026-09-01", "Sharing SIG-DNA", "HO TALAVERA"], ["MR ANGKAT AWITONO", 62201049, "JAKARTA", "HC IR, ER & CULTURE", "FINANCE & RISK MANAGEMENT DIRECTORATE", "2026-09-07", "Sosialisasi peran culture agent dan Sharing SIG-DNA", "HO TALAVERA"], ["MR RIMBUN MARPAUNG", 62502165, "JAKARTA", "DEVELOPMENT & OPERATION MANAGEMENT", "FINANCE & RISK MANAGEMENT DIRECTORATE", "2026-09-08", "MOS Sosialisasi SIG-DNA", "HO TALAVERA"], ["MR ISRAHADI", 62502518, "BANDA ACEH", "LHO PRODUCTION", "OPERATION DIRECTORATE", "2026-09-08", "Introduction to Dorm", "CP LHOKNGA"], ["MR ZULFAN HUSNI", 62502200, "BANDA ACEH", "HCBP FOR CEMENT", "FINANCE & RISK MANAGEMENT DIRECTORATE", "2026-09-09", "Senam Rabu Ceria, Ativitas New Culture LHO, Photo dan absensi follow up hasil MCU", "CP LHOKNGA"], ["MR SEPTRIANDY ALIM", 62500174, "TUBAN", "TUBAN OH&S", "OPERATION DIRECTORATE", "2026-09-09", "Housekeeping Day, Total Productive Maintenance", "CP TUBAN"], ["MR MARCH ARRI WIBOWO", 62503453, "CILACAP", "HCBP FOR CEMENT", "FINANCE & RISK MANAGEMENT DIRECTORATE", "2026-09-10", "Sharing SIG-DNA", "CP CILACAP"], ["MR GUFRONIL ARIFIN", 62501400, "BOGOR", "NAR OH&S", "OPERATION DIRECTORATE", "2026-09-10", "Sharing SIG DNA Monthly Meeting", "CP NAROGONG"], ["MR HENDRI BUDAYA SAPUTRA", 62502504, "TUBAN", "HCBP FOR CEMENT", "FINANCE & RISK MANAGEMENT DIRECTORATE", "2026-09-10", "Sharing Session SIG DNA Monthly Meeting", "CP TUBAN"], ["MR ZULFAN HUSNI", 62502200, "BANDA ACEH", "HCBP FOR CEMENT", "FINANCE & RISK MANAGEMENT DIRECTORATE", "2026-09-10", "Monthly Meeting TQ Sosialisasi SIG DNA", "CP LHOKNGA"], ["MR SEPTRIANDY ALIM", 62500174, "TUBAN", "TUBAN OH&S", "OPERATION DIRECTORATE", "2026-09-12", "Gowes bersama, penguasan sinergi lintas departemen", "CP TUBAN"], ["MS GAMMALIA PERMATA DEWI", 62501176, "BOGOR", "PERFORMANCE MANAGEMENT & EVE AREA", "OPERATION DIRECTORATE", "2026-09-17", "SOT/TO Sharing Best Practice", "CP NAROGONG"], ["MR GUFRONIL ARIFIN", 62501400, "BOGOR", "NAR OH&S", "OPERATION DIRECTORATE", "2026-09-22", "Sosialisasi SIG DNA, TPM Award", "CP NAROGONG"], ["MR ADITYA ALIF DERMAWAN", 62501385, "TUBAN", "FACILITY DEVELOPMENT & PERFOMANCE", "OPERATION DIRECTORATE", "2026-09-23", "SCM Culture Pause", "CP TUBAN"], ["MR MARCH ARRI WIBOWO", 62503453, "CILACAP", "HCBP FOR CEMENT", "FINANCE & RISK MANAGEMENT DIRECTORATE", "2026-09-25", "Housekeeping Day", "CP CILACAP"], ["MR SEPTRIANDY ALIM", 62500174, "TUBAN", "TUBAN OH&S", "OPERATION DIRECTORATE", "2026-09-25", "Senam Sehat", "CP TUBAN"], ["MR ZULFAN HUSNI", 62502200, "BANDA ACEH", "HCBP FOR CEMENT", "FINANCE & RISK MANAGEMENT DIRECTORATE", "2026-09-25", "Senam Sehat", "CP LHOKNGA"], ["MR SEPTRIANDY ALIM", 62500174, "TUBAN", "TUBAN OH&S", "OPERATION DIRECTORATE", "2026-09-25", "OHS Training Associate Fasilitator", "CP TUBAN"], ["MR RANGGA MAHA SESHA", 62503472, "JAKARTA", "HC IR, ER & CULTURE", "FINANCE & RISK MANAGEMENT DIRECTORATE", "2026-09-29", "Sharing SIG-DNA", "HO TALAVERA"], ["MR RICHI GUNANDI SUTARSA", 62502625, "JAKARTA", "INTERNAL AUDIT DIVISION", "PRESIDENT DIRECTORATE", "2026-10-01", "Sharing SIG-DNA", "HO TALAVERA"], ["MR ISRAHADI", 62502518, "BANDA ACEH", "", "", "2026-10-06", "sharing Tranformasi SIG-DNA di KSD", "CP LHOKNGA"]]
+.map((r,i)=>({i,n:r[0],nik:r[1],a:r[2],dp:r[3],dr:r[4],d:r[5],k:r[6],u:r[7],y:+r[5].slice(0,4),m:+r[5].slice(5,7)}));
+/* i = nomor urut baris (dipakai untuk aturan seri: yang lebih dulu melapor di atas) */
+
+/* =====================================================
+   2. ALAT BANTU
+   ===================================================== */
+const BF=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'],BS=BF.map(m=>m.slice(0,3));
+const PAL=['#5b9bfb','#fb9b52','#8b6cfc','#fb7373','#3ddc9a','#f5c842','#22d3ee','#f472b6'];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const fmt=d=>d.split('-').reverse().join('/');
+const uniq=k=>[...new Set(D.map(r=>r[k]))].filter(Boolean).sort();
+const A=uniq('a'),DR=uniq('dr'),YS=uniq('y');                 // daftar area, direktorat, tahun
+const col=a=>PAL[A.indexOf(a)%PAL.length];                     // 1 area = 1 warna tetap
+const ini=n=>n.split(' ').filter(w=>!/^(MR|MS|MRS)$/.test(w)).slice(0,2).map(w=>w[0]).join('');
+const pill=(t,c)=>`<span class="pill" style="--c:${c}">${esc(t)}</span>`;
+const EM='<div class="emp">Tidak ada data untuk filter ini</div>';
+const pad=m=>String(m).padStart(2,'0');
+
+/* Daftar bulan berurutan dari laporan pertama sampai terakhir (mis. 2026-08, 2026-09, 2026-10).
+   Bulan yang tidak ada datanya di luar rentang ini tidak ditampilkan, jadi grafik tidak penuh batang kosong. */
+const KEYS=(()=>{const ds=D.map(r=>r.d.slice(0,7)).sort();let[y,m]=ds[0].split('-').map(Number);const[ey,em]=ds[ds.length-1].split('-').map(Number),o=[];
+  while(y<ey||(y==ey&&m<=em)){o.push(y+'-'+pad(m));if(++m>12){m=1;y++}}return o})();
+const MULTI=new Set(KEYS.map(k=>k.slice(0,4))).size>1;
+const mName=k=>BF[+k.slice(5)-1];
+/* Skala sumbu-Y dikunci ke bulan paling ramai di SELURUH data (bukan data yang sedang difilter).
+   Dengan begitu, saat filter area dipakai, batang ikut mengecil — tidak ter-zoom lagi ke penuh. */
+const GMAX=Math.max(...KEYS.map(k=>D.filter(r=>r.d.startsWith(k)).length));
+const skala=mx=>{const s=mx<=5?1:mx<=10?2:mx<=30?5:10;return{s,max:Math.max(2*s,Math.ceil(mx/s)*s)}};
+
+/* =====================================================
+   3. FILTER & PERINGKAT
+   ===================================================== */
+const S={a:'',dr:'',y:'',m:''};
+/* fil(true) = abaikan filter Bulan (dipakai grafik progres supaya semua bulan tetap tampil) */
+const fil=abaikanBulan=>D.filter(r=>(!S.a||r.a==S.a)&&(!S.dr||r.dr==S.dr)&&(!S.y||r.y==S.y)&&(abaikanBulan||!S.m||r.m==S.m));
+/* Peringkat: hitung baris per nama. Jumlah sama → yang baris pertamanya lebih awal (f kecil) di atas */
+function rank(rs){const m={};rs.forEach(r=>{(m[r.n]=m[r.n]||{n:r.n,a:r.a,c:0,f:r.i}).c++});return Object.values(m).sort((x,y)=>y.c-x.c||x.f-y.f)}
+
+const opt=(l,all)=>`<option value="">${all}</option>`+l.map(x=>`<option value="${esc(x[0])}">${esc(x[1])}</option>`).join('');
+$('fa').innerHTML=opt(A.map(a=>[a,a]),'Semua area');
+$('fd').innerHTML=opt(DR.map(d=>[d,d.replace(' DIRECTORATE','')]),'Semua direktorat');
+$('fy').innerHTML=opt(YS.map(y=>[y,y]),'Semua tahun');
+$('fm').innerHTML=opt(BF.map((m,i)=>[i+1,m]),'Semua bulan');
+['fa','fd','fy','fm'].forEach(id=>$(id).onchange=render);
+$('rst').onclick=()=>{['fa','fd','fy','fm'].forEach(id=>$(id).value='');render()};
+
+/* tab */
+const TABS=[['ringkasan','Ringkasan'],['daftar','Daftar Kegiatan'],['cara','Cara Baca']];
+$('nav').innerHTML=TABS.map((t,i)=>`<button class="tab ${i?'':'on'}" data-p="${t[0]}">${t[1]}</button>`).join('');
+$('nav').onclick=e=>{const b=e.target.closest('.tab');if(!b)return;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x==b));
+  document.querySelectorAll('.pn').forEach(x=>x.classList.toggle('on',x.id=='p-'+b.dataset.p));
+  $('fl').style.display=b.dataset.p=='cara'?'none':'';scrollTo(0,0)};
+
+/* tooltip (muncul kalau elemen punya atribut data-tip) */
+document.addEventListener('mousemove',e=>{const t=e.target.closest('[data-tip]'),tp=$('tip');
+  if(t){tp.textContent=t.dataset.tip;tp.style.opacity=1;tp.style.left=Math.min(e.clientX+12,innerWidth-290)+'px';tp.style.top=e.clientY+12+'px'}else tp.style.opacity=0});
+
+/* klik nama agent (elemen berisi data-ag) → buka daftar kegiatannya */
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ag]');if(t)ma(t.dataset.ag)});
+$('mxb').onclick=()=>$('ov').classList.remove('on');
+$('ov').onclick=e=>{if(e.target==$('ov'))$('ov').classList.remove('on')};
+document.onkeydown=e=>{if(e.key=='Escape')$('ov').classList.remove('on')};
+function ma(n){const l=D.filter(x=>x.n==n).sort((a,b)=>b.d.localeCompare(a.d));
+  $('mn').textContent=n;$('ms').textContent=`${l[0].a} · ${l[0].u} · ${l.length} kegiatan`;
+  $('mb').innerHTML=l.map(x=>`<div class="li">${esc(x.k)}<small>${fmt(x.d)}${x.dp?' · '+esc(x.dp):''}</small></div>`).join('');
+  $('ov').classList.add('on')}
+
+/* =====================================================
+   4. GRAFIK
+   ===================================================== */
+let VW='bln';                                                              // grafik utama: 'bln' = per bulan, 'thn' = per tahun
+const PY=['#5b9bfb','#f5c842','#3ddc9a','#fb7373','#8b6cfc','#22d3ee'];    // 1 tahun = 1 warna
+const GYR=Math.max(...YS.map(y=>D.filter(r=>r.y==y).length));              // total setahun terbanyak (skala tetap grafik tahunan)
+const LASTY=Math.max(...YS),LASTM=+D.map(r=>r.d).sort().pop().slice(5,7);  // bulan terakhir yang ada datanya
+const yc=y=>PY[YS.indexOf(+y)%PY.length];
+
+/* Per bulan: batang bertumpuk per area + garis putus-putus yang menghubungkan total tiap bulan.
+   ser = [{n:area, c:warna, v:[jumlah tiap bulan]}] */
+function chartBulan(el,ser,selKey){
+  const W=900,H=300,L=34,R=14,T=28,Bt=30,{s,max}=skala(GMAX),n=KEYS.length,bw=(W-L-R)/n,w=Math.min(bw*.55,110);
+  let g='',b='',lb='',pts=[];
+  for(let v=0;v<=max;v+=s){const y=H-Bt-(H-T-Bt)*v/max;g+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#2a3049"/><text x="${L-6}" y="${y+4}" text-anchor="end">${v}</text>`}
+  KEYS.forEach((k,i)=>{const x=L+i*bw+(bw-w)/2,cx=x+w/2,dim=selKey&&selKey!=k;let y=H-Bt,tot=0;
+    ser.forEach(q=>{const v=q.v[i];if(!v)return;const h=(H-T-Bt)*v/max;tot+=v;y-=h;
+      b+=`<rect class="bar" data-tip="${esc(q.n)} · ${mName(k)}: ${v} kegiatan" x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="${q.c}" opacity="${dim?.3:1}" stroke="#141824"/>`;
+      if(h>18)b+=`<text x="${cx}" y="${y+h/2+4}" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:11px;pointer-events:none;opacity:${dim?.4:1}">${v}</text>`});
+    pts.push([cx,y]);
+    if(tot)lb+=`<text class="v" x="${cx}" y="${y-12}" text-anchor="middle">${tot}</text>`;
+    lb+=`<text x="${cx}" y="${H-10}" text-anchor="middle">${BS[+k.slice(5)-1]}${MULTI?" '"+k.slice(2,4):''}</text>`});
+  const ln=pts.length>1?`<path d="${pts.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' ')}" fill="none" stroke="#eef0f5" stroke-opacity=".6" stroke-width="2" stroke-dasharray="6 5"/>`:'';
+  const dots=pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#141824" stroke="#eef0f5" stroke-width="2"/>`).join('');
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}${b}${ln}${dots}${lb}</svg>`}
+
+/* Per tahun: garis akumulasi (jumlah kegiatan yang sudah terkumpul sejak Januari). 1 garis = 1 tahun,
+   jadi tahun-tahun bisa dibandingkan di sumbu bulan yang sama. */
+function chartTahun(el,rows,years){
+  const upto=y=>y==LASTY?LASTM:12,N=Math.max(...years.map(upto));
+  const W=900,H=300,L=34,R=44,T=28,Bt=30,{s,max}=skala(GYR),dx=(W-L-R)/Math.max(1,N-1),P=(i,v)=>[L+i*dx,H-Bt-(H-T-Bt)*v/max];
+  let g='',x='',defs='',body='';
+  for(let v=0;v<=max;v+=s){const y=H-Bt-(H-T-Bt)*v/max;g+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#2a3049"/><text x="${L-6}" y="${y+4}" text-anchor="end">${v}</text>`}
+  for(let i=0;i<N;i++)x+=`<text x="${L+i*dx}" y="${H-8}" text-anchor="middle">${BS[i]}</text>`;
+  years.forEach((y,k)=>{const c=yc(y),v=[];let acc=0;
+    for(let m=1;m<=upto(y);m++){acc+=rows.filter(r=>r.y==y&&r.m==m).length;v.push(acc)}
+    const p=v.map((a,i)=>P(i,a));let d=`M${p[0]}`;
+    for(let i=1;i<p.length;i++){const mx=(p[i-1][0]+p[i][0])/2;d+=` C${mx},${p[i-1][1]} ${mx},${p[i][1]} ${p[i]}`}
+    defs+=`<linearGradient id="gy${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".4"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient>`;
+    body+=`<path d="${d} L${p[p.length-1][0]},${H-Bt} L${p[0][0]},${H-Bt} Z" fill="url(#gy${k})"/><path d="${d}" fill="none" stroke="${c}" stroke-width="3"/>`;
+    v.forEach((a,i)=>{if(a>0)body+=`<circle class="bar" data-tip="${y} · ${BF[i]}: sudah ${a} kegiatan" cx="${p[i][0]}" cy="${p[i][1]}" r="5" fill="#141824" stroke="${c}" stroke-width="2.5"/>`});
+    const e=p[p.length-1];body+=`<text class="v" x="${e[0]+8}" y="${e[1]+4}" style="fill:${c}">${v[v.length-1]}</text>`});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}"><defs>${defs}</defs>${g}${x}${body}</svg>`}
+
+/* Donat: tiap potongan = 1 lingkaran dengan stroke-dasharray (panjang potongan, sisa keliling) */
+function donut(el,it){const T=sum(it.map(i=>i.v));if(!T){el.innerHTML=EM;return}
+  const r=58,C=2*Math.PI*r;let off=0;
+  const seg=it.map(i=>{const l=C*i.v/T,s=`<circle class="seg" data-tip="${esc(i.a)}: ${i.v} kegiatan" cx="80" cy="80" r="${r}" fill="none" stroke="${col(i.a)}" stroke-width="22" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-off}" transform="rotate(-90 80 80)"/>`;off+=l;return s}).join('');
+  el.innerHTML=`<div class="dn"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="${r}" fill="none" stroke="#1c2133" stroke-width="22"/>${seg}<text class="big" x="80" y="86">${T}</text><text x="80" y="104">kegiatan</text></svg>
+  <div class="lg">${it.map(i=>`<div style="--c:${col(i.a)}"><i></i>${esc(i.a)}<b>${i.v}</b><em>${(i.v/T*100).toFixed(0)}%</em></div>`).join('')}</div></div>`}
+
+/* Top 10 interaktif. 1 kotak = 1 kegiatan, jadi panjang bar = jumlah kegiatan dan isinya bisa dilihat.
+   FOC = area yang sedang disorot lewat tombol area (baris area lain diredupkan). */
+let FOC='',ALL=false,TOPRK=[],TOPPR=[];
+function drawTop(){
+  const rk=TOPRK,list=ALL?rk:rk.slice(0,10),mx=rk[0]?rk[0].c:1;
+  $('t10t').textContent=ALL?'Semua culture agent':'10 culture agent teraktif';
+  if(FOC&&!rk.some(r=>r.a==FOC))FOC='';
+  $('t10l').innerHTML=[...new Set(rk.map(r=>r.a))].map(a=>`<button class="chip ${FOC==a?'on':''}" data-fa="${esc(a)}" style="--c:${col(a)}"><i></i>${esc(a)}</button>`).join('');
+  $('t10').innerHTML=list.length?list.map((r,i)=>{
+    const c=col(r.a),acts=TOPPR.filter(x=>x.n==r.n).sort((a,b)=>a.d.localeCompare(b.d));
+    return `<div class="tq ${FOC&&FOC!=r.a?'dm':''}" style="--c:${c}" data-ag="${esc(r.n)}"><span class="rk ${i<3?'r'+(i+1):''}">${i+1}</span><div class="av md">${esc(ini(r.n))}</div><div style="min-width:0"><div class="tn">${esc(r.n)}</div>${pill(r.a,c)}</div><div class="tk">${acts.map((x,j)=>`<i class="bk" data-tip="${fmt(x.d)} · ${esc(x.k)}" style="width:calc(${100/mx}% - 3px);animation-delay:${i*40+j*70}ms"></i>`).join('')}</div><b>${r.c}</b></div>`}).join('')
+    +(rk.length>10?`<div style="text-align:center;margin-top:12px"><button class="btn2" id="tall">${ALL?'Tampilkan 10 teratas saja':'Tampilkan semua '+rk.length+' agent'}</button></div>`:''):EM}
+$('t10l').onclick=e=>{const b=e.target.closest('[data-fa]');if(!b)return;FOC=FOC==b.dataset.fa?'':b.dataset.fa;drawTop()};
+$('t10').onclick=e=>{if(e.target.closest('#tall')){ALL=!ALL;drawTop()}};
+
+$('sw').onclick=e=>{const b=e.target.closest('button');if(!b)return;VW=b.dataset.v;render()};
+
+/* =====================================================
+   5. RENDER UTAMA (dipanggil tiap filter berubah)
+   ===================================================== */
+function render(){
+  S.a=$('fa').value;S.dr=$('fd').value;S.y=$('fy').value;S.m=$('fm').value;
+  const pr=fil(),yr=fil(true),rk=rank(pr),ars=S.a?[S.a]:A,aa=new Set(pr.map(r=>r.a)).size,allAg=new Set(D.map(r=>r.n)).size,top=rk[0];
+  const ds=D.map(r=>r.d).sort(),ym=d=>BS[+d.slice(5,7)-1]+' '+d.slice(0,4);
+  $('pb').textContent=ym(ds[0])+' – '+ym(ds[ds.length-1]);
+
+  /* kalimat ringkas di atas */
+  const per=S.m?BF[S.m-1]+(S.y?' '+S.y:''):S.y?'Tahun '+S.y:'Seluruh periode';
+  $('hero').innerHTML=pr.length?`${per}: <b>${pr.length} kegiatan</b> dilaporkan oleh <b>${rk.length} culture agent</b> dari <b>${aa} area</b>.`:`${per}: belum ada kegiatan yang dilaporkan pada filter ini.`;
+
+  /* catatan di kartu "Total kegiatan": selisih dengan bulan sebelumnya (kalau bulan dipilih) */
+  const sel=S.m?(S.y||YS[YS.length-1])+'-'+pad(S.m):'';
+  const keyCnt=k=>D.filter(r=>(!S.a||r.a==S.a)&&(!S.dr||r.dr==S.dr)&&r.d.startsWith(k)).length;
+  const mc=KEYS.map(k=>[k,yr.filter(r=>r.d.startsWith(k)).length]).sort((a,b)=>b[1]-a[1])[0];   // bulan paling ramai
+  let note='';
+  if(S.m){const pi=KEYS.indexOf(sel);
+    if(pi<0)note='bulan ini di luar periode data';
+    else if(pi==0)note='ini bulan pertama dalam data';
+    else note=`Bulan lalu (${mName(KEYS[pi-1])}): ${keyCnt(KEYS[pi-1])} kegiatan`;
+    if(pi>=0&&pi==KEYS.length-1)note+=`<br>Data bulan ini baru sampai ${fmt(ds[ds.length-1])}`}
+  else note=mc&&mc[1]?`Bulan terbanyak: ${mName(mc[0])} (${mc[1]} kegiatan)`:'belum ada data';
+  const actA=[...new Set(pr.map(r=>r.a))].sort(),idle=ars.filter(a=>!actA.includes(a));
+  const areaNote=!pr.length?'belum ada laporan':esc(actA.join(', '))+(idle.length?`<br>Belum melapor: ${esc(idle.join(', '))}`:S.a?'':'<br>Semua area sudah melapor');
+  const kp=[
+    ['📝','#5b9bfb','Total kegiatan',pr.length,note,-1],
+    ['🧑‍🤝‍🧑','#3ddc9a','Agent yang melapor',rk.length,`Seluruh data berisi ${allAg} agent`,-1],
+    ['📍','#f5c842','Area yang melapor',aa,areaNote,-1],
+    ['🏅','#8b6cfc','Paling aktif',top?top.n:'–',top?`${top.c} kegiatan · ${top.a}`:'belum ada data',-1]];
+  $('kp').innerHTML=kp.map((x,i)=>`<div class="kc"><div class="ki" style="--b:${x[1]}26">${x[0]}</div><div class="kb"><div class="kl">${x[2]}</div><div class="kv ${i==3?'sm':''}">${esc(x[3])}</div><div class="kn">${x[4]}</div>${x[5]>=0?`<div class="kbar"><i style="--c:${x[1]};width:${Math.min(1,x[5])*100}%"></i></div>`:''}</div></div>`).join('');
+
+  /* grafik utama: pilih tampilan sesuai saklar. Keduanya memakai data tanpa filter Bulan (yr) */
+  document.querySelectorAll('#sw button').forEach(b=>b.classList.toggle('on',b.dataset.v==VW));
+  if(VW=='bln'){
+    $('prT').textContent='Progres kegiatan per bulan';
+    $('prS').textContent='warna = area · garis putus-putus = total tiap bulan';
+    chartBulan($('bln'),ars.map(a=>({n:a,c:col(a),v:KEYS.map(k=>yr.filter(r=>r.a==a&&r.d.startsWith(k)).length)})),sel);
+    $('yrs').innerHTML='';
+    $('blg').innerHTML=ars.map(a=>`<span style="--c:${col(a)}"><i></i>${a}</span>`).join('');
+  }else{
+    const ys=S.y?[+S.y]:YS;
+    $('prT').textContent='Akumulasi kegiatan sepanjang tahun';
+    $('prS').textContent='satu garis = satu tahun · makin tinggi = makin banyak kegiatan yang sudah terkumpul sejak Januari';
+    chartTahun($('bln'),yr,ys);
+    $('yrs').innerHTML=ys.map(y=>{const l=yr.filter(r=>r.y==y);return `<div class="yc" style="--c:${yc(y)}"><b>${l.length} kegiatan</b><span>${y} · ${new Set(l.map(r=>r.n)).size} agent</span></div>`}).join('');
+    $('blg').innerHTML=ys.map(y=>`<span style="--c:${yc(y)}"><i></i>${y}</span>`).join('');
+  }
+  donut($('dn'),ars.map(a=>({a,v:pr.filter(r=>r.a==a).length})).filter(x=>x.v>0));
+
+  /* 10 agent teraktif: grafik kotak interaktif, digambar oleh drawTop() */
+  TOPRK=rk;TOPPR=pr;drawTop();
+
+  rList()}
+
+/* =====================================================
+   6. DAFTAR KEGIATAN (satu tabel saja)
+   ===================================================== */
+let cur=[];
+function rList(){const q=$('q').value.toLowerCase();
+  cur=fil().filter(r=>!q||[r.n,r.k,r.dp,r.u,r.a,r.dr].join(' ').toLowerCase().includes(q)).sort((x,y)=>y.d.localeCompare(x.d)||x.i-y.i);
+  $('lc').textContent=cur.length+' kegiatan';
+  $('lst').innerHTML=cur.length?`<table><thead><tr><th>Tanggal</th><th>Culture agent</th><th>Area</th><th>Kegiatan</th><th>Unit / pabrik</th></tr></thead><tbody>${cur.map(r=>`<tr><td class="nw">${fmt(r.d)}</td><td><div class="nm" data-ag="${esc(r.n)}">${esc(r.n)}</div><div class="sub">${esc(r.dp||'–')}</div></td><td>${pill(r.a,col(r.a))}</td><td>${esc(r.k)}</td><td class="nw">${esc(r.u)}</td></tr>`).join('')}</tbody></table>`:EM}
+$('q').oninput=rList;
+$('csvb').onclick=()=>{const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"',
+  t=['Tanggal,Nama,NIK,Area,Department,Direktorat,Kegiatan,Unit/Pabrik',...cur.map(r=>[r.d,r.n,r.nik,r.a,r.dp,r.dr,r.k,r.u].map(q).join(','))].join('\n'),
+  a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+t],{type:'text/csv'}));a.download='kegiatan_culture_agent.csv';a.click()};
+
+/* =====================================================
+   7. CARA BACA
+   ===================================================== */
+$('gu').innerHTML=`
+<div class="card"><div class="ch"><span>Dashboard ini untuk apa?</span></div><div class="cb"><p>Untuk melihat siapa saja culture agent yang rutin melapor kegiatan, dari area mana mereka, dan bagaimana jumlah kegiatan berubah dari bulan ke bulan dan dari tahun ke tahun.</p></div></div>
+<div class="card"><div class="ch"><span>Isi tiap tab</span></div><div class="cb"><ul>
+<li><b>Ringkasan</b> – kalimat ringkas dan 4 angka utama, grafik progres, porsi kegiatan per area, dan 10 culture agent teraktif beserta areanya.</li>
+<li><b>Daftar Kegiatan</b> – semua laporan dalam satu tabel. Bisa dicari dan diunduh sebagai CSV.</li></ul></div></div>
+<div class="card"><div class="ch"><span>Membaca 4 angka di atas</span></div><div class="cb"><ul>
+<li><b>Total kegiatan</b> – jumlah laporan pada periode yang dipilih. Di bawahnya tertulis jumlah kegiatan bulan sebelumnya sebagai pembanding.</li>
+<li><b>Agent yang melapor</b> – jumlah culture agent yang punya minimal satu laporan pada periode itu.</li>
+<li><b>Area yang melapor</b> – jumlah area yang punya minimal satu laporan. Nama area yang sudah dan belum melapor tertulis di bawahnya.</li>
+<li><b>Paling aktif</b> – agent dengan kegiatan terbanyak. Kalau jumlahnya sama, yang lebih dulu melapor ditaruh di atas.</li></ul></div></div>
+<div class="card"><div class="ch"><span>Membaca grafik</span></div><div class="cb"><ul>
+<li><b>Progres per bulan</b> – satu batang satu bulan. Warna menunjukkan area, angka di atas batang adalah total bulan itu, dan garis putus-putus menghubungkan total tiap bulan.</li>
+<li><b>Progres per tahun</b> – satu garis satu tahun. Garis menunjukkan jumlah kegiatan yang sudah terkumpul sejak Januari. Pindah tampilan dengan tombol di pojok kanan atas grafik.</li>
+<li><b>10 culture agent teraktif</b> – satu kotak satu kegiatan, jadi makin panjang barisnya makin banyak kegiatannya. Arahkan kursor ke kotak untuk melihat tanggal dan nama kegiatan, klik baris untuk melihat daftar lengkap agent itu. Tombol nama area di kanan atas dipakai untuk menyorot satu area.</li></ul></div></div>
+<div class="card"><div class="ch"><span>Cara menghitung</span></div><div class="cb"><ul>
+<li>Satu baris laporan dihitung satu kegiatan. Kalau satu orang melapor lima kali, hitungannya lima.</li>
+<li><b>Persen di porsi area</b>: kegiatan area itu dibagi total kegiatan semua area.</li>
+<li>Kegiatan masuk ke bulan sesuai tanggal kegiatan, bukan tanggal laporan dibuat.</li>
+<li>Bulan paling akhir biasanya belum penuh sebulan, jadi jangan langsung dibandingkan dengan bulan sebelumnya.</li></ul></div></div>
+<div class="card"><div class="ch"><span>Cara pakai filter</span></div><div class="cb"><ul>
+<li>Pilihan Area, Direktorat, Tahun, dan Bulan di bagian atas mengubah angka, grafik, dan tabel.</li>
+<li>Grafik progres tetap menampilkan semua bulan. Kalau satu bulan dipilih, pada tampilan per bulan bulan itu yang disorot.</li>
+<li>Skala grafik tetap, jadi batang dan garis akan mengecil kalau Anda memilih satu area saja.</li>
+<li>Tombol Reset mengembalikan semua pilihan.</li></ul></div></div>
+<div class="card"><div class="ch"><span>Perlu diingat</span></div><div class="cb"><ul>
+<li>Data diambil dari sheet Data di file Excel dan tertanam di halaman ini. Kalau Excel diperbarui, halaman ini perlu dibuat ulang.</li>
+<li>Nama yang ditulis berbeda (salah ketik atau spasi) dihitung sebagai orang berbeda.</li>
+<li>Laporan yang kolom direktoratnya kosong tetap dihitung, tetapi tidak muncul saat filter Direktorat dipakai.</li>
+<li>Jumlah kegiatan hanya menunjukkan seberapa sering melapor, bukan menilai kualitas kegiatan.</li></ul></div></div>`;
+
+render();
+</script></body></html>
